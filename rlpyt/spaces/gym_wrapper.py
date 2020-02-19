@@ -5,7 +5,7 @@ from collections import namedtuple
 
 from rlpyt.utils.collections import is_namedtuple_class, is_namedtuple
 from rlpyt.spaces.composite import Composite
-
+from gym.spaces import MultiDiscrete
 
 class GymSpaceWrapper:
     """Wraps a gym space to match the rlpyt interface; most of
@@ -113,6 +113,8 @@ class GymSpaceWrapper:
 
     @property
     def n(self):
+        if type(self.space) == MultiDiscrete:
+            return np.sum(self.space.nvec)
         return self.space.n
 
 

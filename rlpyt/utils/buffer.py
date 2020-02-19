@@ -55,6 +55,10 @@ def torchify_buffer(buffer_):
     ``None`` fields remain ``None``, and torch tensors are left alone."""
     if buffer_ is None:
         return
+    if isinstance(buffer_, int):
+        return torch.from_numpy(np.array(buffer_, dtype="int32"))
+    if isinstance(buffer_, np.int64):
+        return torch.from_numpy(np.array(buffer_))
     if isinstance(buffer_, np.ndarray):
         return torch.from_numpy(buffer_)
     elif isinstance(buffer_, torch.Tensor):
