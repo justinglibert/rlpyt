@@ -5,6 +5,7 @@ from collections import namedtuple
 from rlpyt.algos.base import RlAlgorithm
 from rlpyt.algos.utils import (discount_return, generalized_advantage_estimation,
     valid_from_done)
+from rlpyt.utils.logging import logger
 
 # Convention: traj_info fields CamelCase, opt_info fields lowerCamelCase
 OptInfo = namedtuple("OptInfo", ["loss", "gradNorm", "entropy", "perplexity"])
@@ -27,7 +28,11 @@ class PolicyGradientAlgo(RlAlgorithm):
         Build the torch optimizer and store other input attributes. Params
         ``batch_spec`` and ``examples`` are unused.
         """
-        self.optimizer = self.OptimCls(agent.parameters(),
+        learned_parameters = list(filter(lambda p: p[1].requires_grad, agent.model.named_parameters()))
+        logger.log("Learning those parameters:")
+        for name, _ in learned_parameters:
+            logger.log(name)
+        self.optimizer = self.OptimCls(map(lambda p: p[1], learned_parameters),
             lr=self.learning_rate, **self.optim_kwargs)
         if self.initial_optim_state_dict is not None:
             self.optimizer.load_state_dict(self.initial_optim_state_dict)
