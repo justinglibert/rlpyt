@@ -8,6 +8,7 @@ from rlpyt.utils.quick_args import save__init__args
 from rlpyt.utils.buffer import buffer_to, buffer_method
 from rlpyt.utils.collections import namedarraytuple
 from rlpyt.utils.misc import iterate_mb_idxs
+from rlpyt.utils.logging import logger
 
 LossInputs = namedarraytuple("LossInputs",
     ["agent_inputs", "action", "return_", "advantage", "valid", "old_dist_info"])
@@ -149,4 +150,7 @@ class PPO(PolicyGradientAlgo):
         loss = pi_loss + value_loss + entropy_loss
 
         perplexity = dist.mean_perplexity(dist_info, valid)
+        # logger.log(f"value_loss: {value_loss.item()}")
+        # logger.log(f"entropy_loss: {entropy_loss.item()}")
+        # logger.log(f"pi_loss: {pi_loss.item()}")
         return loss, entropy, perplexity

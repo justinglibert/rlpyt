@@ -215,6 +215,7 @@ class MinibatchRlBase(BaseRunner):
         Resets stored optimizer info.
         """
         if traj_infos is None:
+            # It is None when not doing Online eval.
             traj_infos = self._traj_infos
         if traj_infos:
             for k in traj_infos[0]:
